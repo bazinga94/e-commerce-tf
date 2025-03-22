@@ -1,6 +1,6 @@
 resource "aws_subnet" "private-subnet" {
   for_each                = var.private_subnet_cidrs
-  availability_zone_id       = each.value["az"]
+  availability_zone       = each.value["az"]
   cidr_block              = each.value["cidr"]
   vpc_id                  = aws_vpc.main.id
   map_public_ip_on_launch = false
@@ -12,7 +12,7 @@ resource "aws_subnet" "private-subnet" {
 
 resource "aws_subnet" "private-subnet-rds" {
   for_each                = var.private_subnet_cidrs_rds
-  availability_zone_id       = each.value["az"]
+  availability_zone       = each.value["az"]
   cidr_block              = each.value["cidr"]
   vpc_id                  = aws_vpc.main.id
   map_public_ip_on_launch = false
@@ -24,7 +24,7 @@ resource "aws_subnet" "private-subnet-rds" {
 
 resource "aws_subnet" "public-subnet" {
   for_each                = var.public_subnet_cidrs
-  availability_zone_id    = each.value["az"]
+  availability_zone    = each.value["az"]
   cidr_block              = each.value["cidr"]
   vpc_id                  = aws_vpc.main.id
   map_public_ip_on_launch = true

@@ -89,7 +89,18 @@ variable "instance_type_value" {
   type        = string
 }
 
-
+# variable "private_subnet_az" {
+#   description = "Default az"
+#   type = map(any)
+#   default = {
+#     subnet-az1 = {
+#       az = "us-east-1a"
+#     }
+#     subnet-az2 = {
+#       az = "us-east-1b"
+#     }
+#   }
+# }
 
 
 

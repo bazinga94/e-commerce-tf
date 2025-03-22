@@ -3,36 +3,36 @@ tag_name = "midterms"
 basename = "e-commerce"
 public_subnet_cidrs = {
   subnet-az1 = {
-    az   = "use1-az1"
+    az   = "us-east-1a"
     cidr = "10.0.1.0/24"
     idx  = 1
   }
   subnet-az2 = {
-    az   = "use1-az2"
+    az   = "us-east-1b"
     cidr = "10.0.6.0/24"
     idx  = 2
   }
 }
 private_subnet_cidrs = {
   subnet-az1 = {
-    az   = "use1-az1" //dynamic label to identify us-east-az1
+    az   = "us-east-1a" //dynamic label to identify us-east-az1
     cidr = "10.0.60.0/24"
     idx  = 1
   }
   subnet-az2 = {
-    az   = "use1-az2" //dynamic label to identify us-east-az2
+    az   = "us-east-1b" //dynamic label to identify us-east-az2
     cidr = "10.0.120.0/24"
     idx  = 2
   }
 }
 private_subnet_cidrs_rds = {
   subnet-az1 = {
-    az   = "use1-az1" //dynamic label to identify us-east-az1
+    az   = "us-east-1a" //dynamic label to identify us-east-az1
     cidr = "10.0.180.0/24"
     idx  = 1
   }
   subnet-az2 = {
-    az   = "use1-az2" //dynamic label to identify us-east-az2
+    az   = "us-east-1b" //dynamic label to identify us-east-az2
     cidr = "10.0.240.0/24"
     idx  = 2
   }
@@ -40,7 +40,7 @@ private_subnet_cidrs_rds = {
 instance_type_value = "t2.micro"
 
 
-
+# private_subnet_az = [us-east-1a, us-east-1b]
 
 
 
