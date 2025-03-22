@@ -32,7 +32,7 @@ resource "aws_instance" "webserver" {
   availability_zone = var.private_subnet_cidrs["subnet-az${each.value["idx"]}"].az
 
   user_data = templatefile("./scripts/run-httpd.sh", { APACHE_LOG_DIR = "/var/log/httpd" })
-  key_name  = "lol"
+  key_name  = "lol"  # change this to the keys you already have or are going to generate
 
   tags = {
     name = "${var.basename}-webserver-${each.value["az"]}"
@@ -60,7 +60,7 @@ resource "aws_instance" "webserver_pub" {
   monitoring = true
   availability_zone = var.public_subnet_cidrs["subnet-az${each.value["idx"]}"].az
   user_data = templatefile("./scripts/run-httpd.sh", {APACHE_LOG_DIR = "/var/log/httpd"})
-  key_name = "lol"
+  key_name = "lol" # change this to the keys you already have or are going to generate
   associate_public_ip_address = true
   tags = {
     name = "Webserver_public"
