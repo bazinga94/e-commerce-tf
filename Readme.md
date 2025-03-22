@@ -24,6 +24,8 @@
 ```bash
     terraform fmt #formats the code (optional)
 
+    terraform init
+
     terraform validate # optional
 
     terraform plan # check if any errors are occuring during the staging phase
