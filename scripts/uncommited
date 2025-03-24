@@ -1,0 +1,3 @@
+# ecomdbpasswd=$(aws secretsmanager get-secret-value --secret-id ${secret_arn} --query SecretString --output text)
+
+# mysql -h ${mysqlendpoint} -u ${username} --ssl-ca=${certarn} --ssl-mode=REQUIRED -p${ecomdbpasswd}

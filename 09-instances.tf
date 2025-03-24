@@ -17,7 +17,7 @@ data "aws_ami" "ubuntu" {
 //instance configuration
 resource "aws_instance" "webserver" {
   for_each   = var.private_subnet_cidrs
-  depends_on = [aws_security_group.sg_private]
+  depends_on = [aws_security_group.sg_private, aws_db_instance.rds]
 
   ami = data.aws_ami.ubuntu.image_id
 
@@ -31,7 +31,12 @@ resource "aws_instance" "webserver" {
 
   availability_zone = var.private_subnet_cidrs["subnet-az${each.value["idx"]}"].az
 
-  user_data = templatefile("./scripts/run-httpd.sh", { APACHE_LOG_DIR = "/var/log/httpd" })
+  user_data = templatefile("./scripts/run-httpd.sh.tpl", {
+    APACHE_LOG_DIR = "/var/log/httpd"
+    mysqlendpoint = aws_db_instance.rds.endpoint
+    username = "admin"
+    ecomdbpasswd = random_password.rds.result
+    })
   key_name  = "lol"  # change this to the keys you already have or are going to generate
 
   tags = {
@@ -52,14 +57,13 @@ resource "aws_ebs_encryption_by_default" "webserver" {
 
 resource "aws_instance" "webserver_pub" {
   for_each   = var.private_subnet_cidrs
-  depends_on = [ aws_security_group.sg_loadbalancer ]
+  depends_on = [ aws_security_group.sg_loadbalancer, aws_db_instance.rds ]
   ami = data.aws_ami.ubuntu.image_id
   instance_type = var.instance_type_value
   security_groups = [ aws_security_group.sg_loadbalancer.id ]
   subnet_id = aws_subnet.public-subnet[each.key].id
   monitoring = true
   availability_zone = var.public_subnet_cidrs["subnet-az${each.value["idx"]}"].az
-  user_data = templatefile("./scripts/run-httpd.sh", {APACHE_LOG_DIR = "/var/log/httpd"})
   key_name = "lol" # change this to the keys you already have or are going to generate
   associate_public_ip_address = true
   tags = {

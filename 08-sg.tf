@@ -67,13 +67,7 @@ resource "aws_security_group" "sg_rds" {
   name        = "sg_rds"
   description = "Security group for private RDS instance"
   vpc_id      = aws_vpc.main.id
-}
-
-// Security group for private instances
-resource "aws_security_group" "sg_private" {
-  name        = "sg_private"
-  description = "Security group for private instances"
-  vpc_id      = aws_vpc.main.id
+  depends_on = [ aws_security_group.sg_private ]
 }
 
 // Allow private instances to access RDS (breaking the cycle)
@@ -84,6 +78,7 @@ resource "aws_security_group_rule" "sg_private_to_rds" {
   protocol                 = "tcp"
   security_group_id        = aws_security_group.sg_rds.id
   source_security_group_id = aws_security_group.sg_private.id
+  depends_on = [ aws_security_group.sg_rds ]
 }
 
 // Allow RDS to respond to private instances (if necessary)
@@ -94,6 +89,15 @@ resource "aws_security_group_rule" "sg_rds_to_private" {
   protocol                 = "tcp"
   security_group_id        = aws_security_group.sg_rds.id
   source_security_group_id = aws_security_group.sg_private.id
+  depends_on = [ aws_security_group.sg_rds ]
+}
+
+// Security group for private instances
+resource "aws_security_group" "sg_private" {
+  name        = "sg_private"
+  description = "Security group for private instances"
+  vpc_id      = aws_vpc.main.id
+  depends_on = [ aws_security_group.sg_loadbalancer ]
 }
 
 // Allow traffic from Load Balancer to private instances
@@ -105,6 +109,7 @@ resource "aws_security_group_rule" "lb_to_private_http" {
   security_group_id = aws_security_group.sg_private.id
   # source_security_group_id = aws_security_group.sg_loadbalancer.id
   cidr_blocks = ["0.0.0.0/0"]
+  depends_on = [ aws_security_group.sg_private ]
 }
 
 resource "aws_security_group_rule" "private_http_to_lb" {
@@ -115,6 +120,7 @@ resource "aws_security_group_rule" "private_http_to_lb" {
   security_group_id = aws_security_group.sg_private.id
   # source_security_group_id = aws_security_group.sg_loadbalancer.id
   cidr_blocks = ["0.0.0.0/0"]
+  depends_on = [ aws_security_group.sg_private ]
 }
 
 resource "aws_security_group_rule" "lb_to_private_https" {
@@ -125,6 +131,7 @@ resource "aws_security_group_rule" "lb_to_private_https" {
   security_group_id = aws_security_group.sg_private.id
   # source_security_group_id = aws_security_group.sg_loadbalancer.id
   cidr_blocks = ["0.0.0.0/0"]
+  depends_on = [ aws_security_group.sg_private ]
 }
 
 resource "aws_security_group_rule" "private_https_to_lb" {
@@ -135,6 +142,7 @@ resource "aws_security_group_rule" "private_https_to_lb" {
   security_group_id = aws_security_group.sg_private.id
   # source_security_group_id = aws_security_group.sg_loadbalancer.id
   cidr_blocks = ["0.0.0.0/0"]
+  depends_on = [ aws_security_group.sg_private ]
 }
 
 resource "aws_security_group_rule" "lb_to_private_ssh" {
@@ -144,6 +152,7 @@ resource "aws_security_group_rule" "lb_to_private_ssh" {
   protocol                 = "tcp"
   security_group_id        = aws_security_group.sg_private.id
   source_security_group_id = aws_security_group.sg_loadbalancer.id
+  depends_on = [ aws_security_group.sg_private ]
 }
 
 resource "aws_security_group_rule" "private_ssh_to_lb" {
@@ -153,6 +162,27 @@ resource "aws_security_group_rule" "private_ssh_to_lb" {
   protocol                 = "tcp"
   security_group_id        = aws_security_group.sg_private.id
   source_security_group_id = aws_security_group.sg_loadbalancer.id
+  depends_on = [ aws_security_group.sg_private ]
+}
+
+resource "aws_security_group_rule" "private_to_rds" {
+  type                     = "ingress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.sg_private.id
+  source_security_group_id = aws_security_group.sg_rds.id
+  depends_on = [ aws_security_group.sg_private ]
+}
+
+resource "aws_security_group_rule" "rds_to_private" {
+  type                     = "egress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.sg_private.id
+  source_security_group_id = aws_security_group.sg_rds.id
+  depends_on = [ aws_security_group.sg_private ]
 }
 
 // Allow private instances to communicate with Load Balancer

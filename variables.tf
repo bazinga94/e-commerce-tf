@@ -89,6 +89,12 @@ variable "instance_type_value" {
   type        = string
 }
 
+variable "rds_instance_type" {
+  description = "Type of rds instance"
+  type = string
+  default = "db.t4g.micro"
+  }
+
 # variable "private_subnet_az" {
 #   description = "Default az"
 #   type = map(any)

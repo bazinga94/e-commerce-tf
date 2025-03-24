@@ -17,12 +17,3 @@ resource "aws_nat_gateway" "ngw" {
   }
 }
 
-# resource "aws_nat_gateway" "ngw-rds" {
-#     for_each = var.private_subnet_cidrs_rds
-#     subnet_id = aws_subnet.private_subnet_cidrs_rds[each.key].id
-#     allocation_id = aws_eip.nat[each.key].id
-
-#     tags = {
-#     Name = "${var.basename}-ngw-${each.key}"
-#   }
-# }

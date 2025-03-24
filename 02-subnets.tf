@@ -22,6 +22,7 @@ resource "aws_subnet" "private-subnet-rds" {
   }
 }
 
+
 resource "aws_subnet" "public-subnet" {
   for_each                = var.public_subnet_cidrs
   availability_zone    = each.value["az"]

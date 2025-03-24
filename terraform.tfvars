@@ -38,6 +38,7 @@ private_subnet_cidrs_rds = {
   }
 }
 instance_type_value = "t2.micro"
+rds_instance_type = "db.t3.micro"
 
 
 # private_subnet_az = [us-east-1a, us-east-1b]
