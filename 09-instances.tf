@@ -37,7 +37,7 @@ resource "aws_instance" "webserver" {
     username = "admin"
     ecomdbpasswd = random_password.rds.result
     })
-  key_name  = "lol"  # change this to the keys you already have or are going to generate
+  key_name  = "efs_ec2_key_pair"  # change this to the keys you already have or are going to generate
 
   tags = {
     name = "${var.basename}-webserver-${each.value["az"]}"
@@ -64,7 +64,7 @@ resource "aws_instance" "webserver_pub" {
   subnet_id = aws_subnet.public-subnet[each.key].id
   monitoring = true
   availability_zone = var.public_subnet_cidrs["subnet-az${each.value["idx"]}"].az
-  key_name = "lol" # change this to the keys you already have or are going to generate
+  key_name = "efs_ec2_key_pair" # change this to the keys you already have or are going to generate
   associate_public_ip_address = true
   tags = {
     name = "Webserver_public"
